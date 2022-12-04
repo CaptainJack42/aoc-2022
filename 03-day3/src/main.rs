@@ -15,7 +15,7 @@ fn part1(input: &Vec<String>) -> usize {
     for line in input {
         let (first_comp, second_comp): (&str, &str) = line.split_at(line.len() / 2);
         for char in first_comp.chars() {
-            if second_comp.chars().any(|c| c == char) {
+            if second_comp.contains(char) {
                 ret += ((char as u8 - 38) % 58) as usize;
                 break;
             }
@@ -28,7 +28,7 @@ fn part2(input: &Vec<String>) -> usize {
     let mut ret: usize = 0;
     for group in input.chunks(3) {
         for char in group[0].chars() {
-            if group[1].chars().any(|c| c == char) && group[2].chars().any(|c| c == char) {
+            if group[1].contains(char) && group[2].contains(char) {
                 ret += ((char as u8 - 38) % 58) as usize;
                 break;
             }
