@@ -102,7 +102,7 @@ fn part1(disk: &HashMap<String, HashSet<String>>) -> usize {
     for cd in disk.keys() {
         let size = calc_dir_size(&dir_sizes, &disk, cd.to_string());
         dir_sizes.insert(cd.to_string(), size);
-        if size <= 100000 {
+        if size <= 100_000 {
             ret += size;
         }
     }
