@@ -13,32 +13,26 @@ fn main() {
 }
 
 fn part1(map: &BTreeMap<Coordinate, Tree>) -> usize {
-    let mut ret: usize = 0;
-    for (_c, t) in map {
-        if t.vis_n || t.vis_e || t.vis_s || t.vis_w {
-            ret += 1;
-        }
-    }
-    return ret;
+    map.values()
+        .filter(|tree| tree.vis_n || tree.vis_e || tree.vis_s || tree.vis_w)
+        .count()
 }
 
 fn part2(map: &BTreeMap<Coordinate, Tree>) -> usize {
     let max_c: Coordinate = *map.keys().max().unwrap();
-    let mut vis_scores: Vec<usize> = Vec::new();
-    for y in 1..max_c.y {
-        for x in 1..max_c.x {
-            vis_scores.push(
-                explore_n(map, Coordinate { x, y })
-                    * explore_e(map, Coordinate { x, y })
-                    * explore_s(map, Coordinate { x, y })
-                    * explore_w(map, Coordinate { x, y }),
-            );
-        }
-    }
-    return *vis_scores.iter().max().unwrap();
+    let vis_scores: Vec<usize> = (1..max_c.y)
+        .flat_map(|y| (1..max_c.x).map(move |x| Coordinate { x, y }))
+        .map(|c| {
+            let e = explore_e(map, &c);
+            let s = explore_s(map, &c);
+            let w = explore_w(map, &c);
+            explore_n(map, &c) * e * s * w
+        })
+        .collect();
+    *vis_scores.iter().max().unwrap()
 }
 
-fn explore_n(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
+fn explore_n(map: &BTreeMap<Coordinate, Tree>, c: &Coordinate) -> usize {
     let mut i: usize = 1;
     let h: u32 = map.get(&c).unwrap().height;
     while let Some(t) = map.get(&Coordinate { x: c.x, y: c.y - i }) {
@@ -50,7 +44,7 @@ fn explore_n(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
     return i - 1;
 }
 
-fn explore_e(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
+fn explore_e(map: &BTreeMap<Coordinate, Tree>, c: &Coordinate) -> usize {
     let mut i: usize = 1;
     let h: u32 = map.get(&c).unwrap().height;
     while let Some(t) = map.get(&Coordinate { x: c.x + i, y: c.y }) {
@@ -62,7 +56,7 @@ fn explore_e(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
     return i - 1;
 }
 
-fn explore_s(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
+fn explore_s(map: &BTreeMap<Coordinate, Tree>, c: &Coordinate) -> usize {
     let mut i: usize = 1;
     let h: u32 = map.get(&c).unwrap().height;
     while let Some(t) = map.get(&Coordinate { x: c.x, y: c.y + i }) {
@@ -74,7 +68,7 @@ fn explore_s(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
     return i - 1;
 }
 
-fn explore_w(map: &BTreeMap<Coordinate, Tree>, c: Coordinate) -> usize {
+fn explore_w(map: &BTreeMap<Coordinate, Tree>, c: &Coordinate) -> usize {
     let mut i: usize = 1;
     let h: u32 = map.get(&c).unwrap().height;
     while let Some(t) = map.get(&Coordinate { x: c.x - i, y: c.y }) {
