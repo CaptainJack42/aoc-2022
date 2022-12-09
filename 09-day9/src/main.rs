@@ -71,17 +71,17 @@ fn part2(input: &Vec<String>) -> usize {
             }
             for i in 1..rope.len() {
                 // Check if we need to move at all
-                let delta_x = rope[i].x - rope[i - 1].x;
-                let delta_y = rope[i].y - rope[i - 1].y;
+                let delta_x = rope[i - 1].x - rope[i].x;
+                let delta_y = rope[i - 1].y - rope[i].y;
                 if delta_x.abs() > 1 || delta_y.abs() > 1 {
                     // move diagonally
                     if delta_x != 0 && delta_y != 0 {
-                        rope[i].x += -delta_x.signum();
-                        rope[i].y += -delta_y.signum();
+                        rope[i].x += delta_x.signum();
+                        rope[i].y += delta_y.signum();
                     //move straight
                     } else {
-                        rope[i].x += if delta_x.abs() > 1 { -delta_x.signum() } else { 0 };
-                        rope[i].y += if delta_y.abs() > 1 { -delta_y.signum() } else { 0 };
+                        rope[i].x += if delta_x.abs() > 1 { delta_x.signum() } else { 0 };
+                        rope[i].y += if delta_y.abs() > 1 { delta_y.signum() } else { 0 };
                     }
                 } else {
                     // if we reach the first knot that doesn't move, all knots behind it don't move
